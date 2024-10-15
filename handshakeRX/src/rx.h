@@ -52,7 +52,7 @@ SC_MODULE(RX){
 
 						o_OnOff.write(0);
 						o_fifo_push.write(1);
-						count = i_nFlit_to_rx.;
+						count = i_nFlit_to_rx.read();
 
 			      } else {
 			          next_state = 1;}break;
@@ -71,7 +71,12 @@ SC_MODULE(RX){
 				    	o_fifo_push.write(0);
 				      }break;
 			      default:
-
+			    	  if(count == 0){
+			    		  next_state = 0;
+  			    		 cout<<":: from S3:RECIVING to S0:IDLE"<< endl;
+  			    		 o_OnOff.write(0);
+  						 o_fifo_push.write(0);
+		    	 	 } else
 			    	  if (i_Req.read()) {
 			    	 	next_state = 2;
 
@@ -81,14 +86,7 @@ SC_MODULE(RX){
 						o_fifo_push.write(1);
 			    	 	count--;
 
-			    	  } else if(count == 0){
-			    		 next_state = 0;
-
-			    		 cout<<":: from S3:RECIVING to S0:IDLE"<< endl;
-
-			    		 o_OnOff.write(0);
-						 o_fifo_push.write(0);
-			    	 	 }else{
+			    	  } else {
 			    	    next_state = 3;}break;
 			            	} // end switch
 			        }// end else->reset

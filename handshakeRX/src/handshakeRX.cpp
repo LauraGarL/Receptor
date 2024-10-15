@@ -53,7 +53,7 @@ int sc_main(int argc, char* argv[]) {
     		i_Req=0;
     		i_SoP=0;
     		i_fifo_full=0;
-    		i_nFlit_to_rx=0;
+    		i_nFlit_to_rx=6;
     		i_ready_to_receive=0;
 
     		for(int i=0; i<2; i++){
@@ -66,7 +66,6 @@ int sc_main(int argc, char* argv[]) {
     		i_Req=0;
     		i_SoP=0;
     		i_fifo_full=0;
-    		i_nFlit_to_rx=0;
     		i_ready_to_receive=0;
     				i_reset = 1; //Assert the reset
 
@@ -84,29 +83,82 @@ int sc_main(int argc, char* argv[]) {
     				cout << "@" << sc_time_stamp() <<"\t De-Asserting reset\n" << endl;
 
     				cout << "@" << sc_time_stamp() <<"\t All configurations:\n" << endl; //Quiero poner todas las combinaciones de las solicitudes.
-    	    		i_Req=0;
+//Listo para recibir
+    				i_Req=0;
     	    		i_SoP=0;
     	    		i_fifo_full=0;
-    	    		i_nFlit_to_rx=0;
-    	    		i_ready_to_receive=0;
+    	    		i_ready_to_receive=1;
 
     				i_clock = 0;
     				sc_start(10,SC_NS);
     				i_clock = 1;
     				sc_start(10,SC_NS);
 
-
-    	    		i_Req=0;
+//Hay una solicitud
+    	    		i_Req=1;
     	    		i_SoP=0;
     	    		i_fifo_full=0;
     	    		i_nFlit_to_rx=0;
-    	    		i_ready_to_receive=1;
+    	    		i_ready_to_receive=0;
 
     				//Clock
     				i_clock = 0;
     				sc_start(10,SC_NS);
     				i_clock = 1;
     				sc_start(10,SC_NS);
+
+//Es  un inicio de paquete
+    	    		i_SoP=1;
+    	    		i_fifo_full=0;
+    	    		i_nFlit_to_rx=0;
+    	    		i_ready_to_receive=0;
+
+    				//Clock
+    				i_clock = 0;
+    				sc_start(10,SC_NS);
+    				i_clock = 1;
+    				sc_start(10,SC_NS);
+//Hay una s olicitud pero ya no hay espacio en la fifo
+    	    		i_Req=1;
+    	    		i_SoP=0;
+    	    		i_fifo_full=1;
+    	    		i_ready_to_receive=0;
+
+    				//Clock
+    				i_clock = 0;
+    				sc_start(10,SC_NS);
+    				i_clock = 1;
+    				sc_start(10,SC_NS);
+//Sigue habiendo una solicitud y ya no está llena la fifo
+    	    		i_Req=1;
+    	    		i_SoP=0;
+    	    		i_fifo_full=0;
+    	    		i_ready_to_receive=0;
+
+    				//Clock
+    				i_clock = 0;
+    				sc_start(10,SC_NS);
+    				i_clock = 1;
+    				sc_start(10,SC_NS);
+//Me encuentro en S3 y hay una solicitud
+    			for(int i=0; i<i_nFlit_to_rx.read(); i++){
+    	    		i_Req=1;
+    	    		i_SoP=0;
+    	    		i_fifo_full=0;
+    	    		i_ready_to_receive=0;
+
+    				//Clock
+    				i_clock = 0;
+    				sc_start(10,SC_NS);
+    				i_clock = 1;
+    				sc_start(10,SC_NS);
+
+    	    		i_Req=0;
+    	    		i_SoP=0;
+    	    		i_fifo_full=0;
+    	    		i_ready_to_receive=0;
+}
+
 
 
 cout << "@" << sc_time_stamp() << "Terminating simulation" << endl;
